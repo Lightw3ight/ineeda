@@ -91,16 +91,6 @@ ineeda.intercept<Promise<any>>(Promise, { then: null });
 
 // Prevent RxJS from thinking ineeda mocks are Schedulers:
 ineeda.intercept<Scheduler>(Observable, { schedule: null });
-
-// Prevent jasmine from thinking ineeda mocks already have the fields 'and' and 'calls'
-ineeda.intercept((value: any, key: string, values: any, target: any) => {
-    if (key === 'and' || key === 'calls') {
-        Object.defineProperty(target, key, {
-            enumerable: false
-        });
-    }
-    return value;
-});
 ```
 
 Then later, in your tests, you could do the following:
@@ -125,6 +115,16 @@ You can also *globally* intercept something on all objects, by using the `interc
 ineeda.intercept({
     // Prevent zone.js from thinking ineeda mocks are unconfigurable:
     __zone_symbol__unconfigurables: null
+});
+
+ineeda.intercept((value: any, key: string, values: any, target: any) => {
+    // Prevent jasmine from thinking ineeda mocks already have the fields 'and' and 'calls'
+    if (key === 'and' || key === 'calls') {
+        Object.defineProperty(target, key, {
+            enumerable: false
+        });
+    }
+    return value;
 });
 ```
 
