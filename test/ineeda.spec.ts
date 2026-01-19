@@ -1,8 +1,8 @@
 // Test Utilities:
 import * as chai from 'chai';
-import * as dedent from 'dedent';
+import dedent from 'dedent';
 import * as sinon from 'sinon';
-import * as sinonChai from 'sinon-chai';
+import sinonChai from 'sinon-chai';
 
 // Test setup:
 let { expect } = chai;
@@ -138,7 +138,7 @@ describe('ineeda:', () => {
                 weapon: ineeda<Weapon>()
             });
 
-            expect(Object.keys(hero)).to.deep.equal(['prototype', 'weapon']);
+            expect(Object.keys(hero)).to.deep.equal(['weapon']);
         });
 
         it('should work with Array.from', () => {
@@ -307,14 +307,14 @@ describe('ineeda:', () => {
 
         it('should support Object.defineProperty for setting properties (vitest compatibility)', () => {
             let weapon = ineeda<Weapon>();
-            
+
             // Simulate what vitest's vi.spyOn() does internally
             let callCount = 0;
-            let spy = function() {
+            let spy = () => {
                 callCount++;
                 return 42;
             };
-            
+
             Object.defineProperty(weapon, 'sharpen', {
                 value: spy,
                 writable: true,
@@ -330,10 +330,10 @@ describe('ineeda:', () => {
 
         it('should support Object.defineProperty for nested properties', () => {
             let hero = ineeda<Hero>();
-            
+
             // Access nested property first to create the proxy
             let weapon = hero.weapon;
-            
+
             // Now define a spy on the nested object
             let sharpened = false;
             Object.defineProperty(weapon, 'sharpen', {

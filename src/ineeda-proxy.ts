@@ -13,7 +13,7 @@ export function createProxy <T, K extends IneedaKey<T>> (valuesExternal: Partial
     let intercepted: Array<IneedaKey<T>> = [];
 
     reset();
-    let proxyBase = key ? (() => {}) : {};
+    let proxyBase = key ? (() => { /* no-op */ }) : {};
     return new Proxy(<any>proxyBase, { apply, get, getOwnPropertyDescriptor, has, ownKeys, set } as ProxyHandler<T & IneedaProxy<T>>);
 
     function apply (): void {
@@ -68,7 +68,7 @@ export function createProxy <T, K extends IneedaKey<T>> (valuesExternal: Partial
     }
 
     function ownKeys (): Array<string> {
-        return ['prototype'].concat(Object.keys(valuesExternal));
+        return Object.keys(valuesExternal);
     }
 
     function reset (): T {
