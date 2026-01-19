@@ -304,5 +304,47 @@ describe('ineeda:', () => {
 
             ineeda.reset();
         });
+
+        it('should support Object.defineProperty for setting properties (vitest compatibility)', () => {
+            let weapon = ineeda<Weapon>();
+            
+            // Simulate what vitest's vi.spyOn() does internally
+            let callCount = 0;
+            let spy = function() {
+                callCount++;
+                return 42;
+            };
+            
+            Object.defineProperty(weapon, 'sharpen', {
+                value: spy,
+                writable: true,
+                configurable: true,
+                enumerable: true
+            });
+
+            let result = weapon.sharpen();
+
+            expect(result).to.equal(42);
+            expect(callCount).to.equal(1);
+        });
+
+        it('should support Object.defineProperty for nested properties', () => {
+            let hero = ineeda<Hero>();
+            
+            // Access nested property first to create the proxy
+            let weapon = hero.weapon;
+            
+            // Now define a spy on the nested object
+            let sharpened = false;
+            Object.defineProperty(weapon, 'sharpen', {
+                value: () => { sharpened = true; },
+                writable: true,
+                configurable: true
+            });
+
+            weapon.sharpen();
+
+            expect(sharpened).to.equal(true);
+        });
     });
 });
